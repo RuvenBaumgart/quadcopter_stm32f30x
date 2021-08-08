@@ -1,0 +1,61 @@
+
+*** 04.01.2020: 012.7.2 ***
+
+BRIghtFlight_012.7.2 is the first Version with OneShot125.
+DMA is used for all communication with peripherals( USART and I2C).
+  
+Overall LOOPTIME is set to 750 ms to stay within the oneshot125 range.
+
+LOOPTIME approx. 530 to 560 us.
+ 
+*** 17.01.2020: 012.8 ***
+
+In previous version the level algorithm was not working
+try to fix it in this version. The issue seems to be the sample time. It was to fast because it was called within the main loop. 
+The sample Time of 100 Hz (10000us) performes better.
+ 
+Simple cooperative determined scheduler is programmed calling attitude and buzzer update 100 Hz.
+LOOPTIME decrease to 350 - to 400 us 
+
+*** 18.01.2020: 012.8 ***
+Little changes in the way the taskMainPidLoop is called. It is now called frequently and only the esc are calclulated based on if the quad is armed or disarmed. 
+The reason is that the mahony caluclation needs to stabalize and cannot be reset everytime the quad get disaremd.
+
+LOOPTIME decrased to 260 - 270 us. delayed to 750us.
+
+*** 21.01.2020: 013 ***
+1. Try using Timer 15 Ch1 and CH2 to for the PWM 7 and 8 pins for the gimbal controll 
+2. Using TIM16 and TIM17 for thw pwm generation. MOE Bit needed to be set because of the blocking function.
+
+*** 22.02.2020: 13.1 *** 
+1. GyroUpdate: Within the gyro update function the limitation between two consecutive reading is removed.
+2. Scheduler-Code was updated. The MAKRO for the calculation of the update time based on the frequency was not working. In the data struct the next calling time is typed manually in microseconds.
+
+*** 24.03.2020: 13.02 ***
+1. The gyro calibration process was updated.
+
+*** 28.03.2020: 13.03 ***
+1. The main loop was refactored.
+2. the loop timing is now handled by Timer TIM7. Controlling it soley by calculating the passed time with micros() didn´t worked well and was causing unexplainable jitter in the main loop. 
+
+*** 01.04.2020: 14.2 ***
+1. main loop was refactores sligthly.
+2. loop time is still glitchy, but flightcontroller is running smooth.
+
+*** 01.04.2020: 14.3 *** - STABLE - 
+1. Furhter development of loop stability.
+2. cleaning up of the code. Scope of Variables was checked.    
+3. However, the scheduler is still not working correctly.
+
+*** 02.04.2020: 15 *** - STABLE - 
+1. ItermRelax is implemented 
+2. memcpy in the funtionc getReceiverInputValues to avoid interference with the irq 
+3. small updates of variables sepcifyer
+4. TIM2 input filtering reduced.
+
+*** 17.04.2020: 15.1 *** -DEVELOPMENT-i
+1. The map function is replace by a 8-Times faster Timer for the pwm generation. This keeps the 1000 Resolution for a standard pwm signal
+2. the executeSubTask is taking mircos again instead of millis.
+
+*** 30.04.2020: 15.2 *** -STABLE - 
+1. Changed the MAINLOOP to 2kHz i.e. 500ms.
